@@ -5,7 +5,7 @@ class FPTree {
     private final Node root;
     private final Map<String, HeaderEntry> headerTable; //header table for O(1) operations
     private final AtomicInteger nodeCount = new AtomicInteger(0); //total nodes in tree
-    //private final int nodeCount = new Integer(0);
+    //private int nodeCount = new Integer(0);
     //not too sure what an AtomicInteger is even after googling it
 
     //header table
@@ -35,6 +35,7 @@ class FPTree {
                 child = new Node(item);
                 currentNode.addChild(child);
                 nodeCount.incrementAndGet();
+                //nodeCount++;
                 //atomic increment++ method (good for memory)
 
                 //header table update O(1)
