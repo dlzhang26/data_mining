@@ -225,16 +225,21 @@ public class DiffEclat {
         // Setup paths for testing
         HashSet<String> setNames = new HashSet<>();
         setNames.add("accidents");
-//        setNames.add("retail");
+        //setNames.add("retail");
 //        setNames.add("T10I4D100K");
 //        setNames.add("T40I10D100K");
 //        setNames.add("webdocs");
 
+
+
         // Setup thresholds for testing
-        SortedSet<Double> thresholds = new TreeSet<>();
-        for (double i = 0.01; i <= 0.5; i += 0.01) {
-            thresholds.add(i);
-        }
+        //SortedSet<Double> thresholds = new TreeSet<>();
+//, 0.05,0.01,0.005,0.001,0.0001
+        Double [] thresholds = { 0.14,0.13, 0.12, 0.11};
+
+//        for (double i = 0.5; i <= 0.001; i += 0.01) {
+//            thresholds.add(i);
+//        }
 
         // Initialize eclat
         DiffEclat eclat = new DiffEclat();
@@ -242,11 +247,13 @@ public class DiffEclat {
 
         // Setup CSV output file
         StringBuilder csvContent = new StringBuilder();
-        csvContent.append("Threshold,# Itemsets, Length Longest Itemset,Runtime\n");
+        csvContent.append("Threshold,# Itemsets, Length Longest Itemset,Runtime(s)\n");
 
         int count = 1;
         for (String name : setNames) {
-            eclat.setup(Paths.get("/Users/slatertot21/Python Projects/cosc_254/Final Project/DiffEclat/Datasets/" + name + ".dat"));
+            eclat.setup(Paths.get("accidents.txt"));
+
+            //eclat.setup(Paths.get("/Users/slatertot21/Python Projects/cosc_254/Final Project/DiffEclat/Datasets/" + name + ".dat"));
             for (double threshold : thresholds) {
                 startTime = System.currentTimeMillis();
 
@@ -271,7 +278,7 @@ public class DiffEclat {
             count++;
 
             // Output CSV file
-            try (FileWriter writer = new FileWriter("/Users/slatertot21/Python Projects/cosc_254/Final Project/DiffEclat/Datasets/" + name + "results.csv")) {
+            try (FileWriter writer = new FileWriter("Datasets/" + name + "results.csv")) {
                 writer.write(csvContent.toString());
                 System.out.println("CSV file written successfully.");
             } catch (IOException e) {
