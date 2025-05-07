@@ -6,6 +6,10 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class tests the exact Apriori method for different frequency thresholds
+ */
+
 public class APrioriTest {
     public static void main(String args[]){
         //String[] files = {"accidents.txt", "retail.txt"};

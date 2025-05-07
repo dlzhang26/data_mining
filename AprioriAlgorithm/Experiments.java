@@ -3,6 +3,10 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class tests the Sampled based Apriori algorithm using different thresholds
+ */
+
 public class Experiments {
     public static void main(String args[]){
         //String[] files = {"test.txt"};
@@ -12,7 +16,7 @@ public class Experiments {
 
         new File(outputDir).mkdirs();
 
-        double[] minFreq = { 0.35};
+        double[] minFreq = {0.35};
 
         for(String inputFile: files) {
             Path transactionPath = Path.of(inputFile);

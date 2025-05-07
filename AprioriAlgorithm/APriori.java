@@ -4,6 +4,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * The Apriori class takes in either a path or a list of sets of transactions and a minimum frequency. This class
+ * returns a map of the frequent itemsets stored in a HashSet with its corresponding support
+ */
+
 public class APriori {
     List<Set<Integer>> transactions;
     Map<Integer, Integer> itemSupports;
@@ -13,6 +18,11 @@ public class APriori {
 
     double startTime;
     double endTime;
+
+    /**
+     * This is the constructor used to directly read a data file and create the list of transactions
+     * @param path the Path to the corresponding file
+     */
 
     public APriori(Path path) {
         System.out.println("Starting support counting");
@@ -25,7 +35,6 @@ public class APriori {
                 String[] lineSplit = line.split(" ");
                 Set<Integer> transaction = new HashSet<>();
                 for (String stringItem : lineSplit) {
-                    double endTime;
                     int item = Integer.parseInt(stringItem);
                     transaction.add(item);
                     itemSupports.merge(item, 1, (a,b) -> a + b);
@@ -37,6 +46,12 @@ public class APriori {
         }
     }
 
+    /**
+     * This is the constructor used when the file has already been read elsewhere. This is used in the sampled based
+     * Apriori algorithm
+     * @param inputTransactions
+     */
+
     public APriori(List<Set<Integer>> inputTransactions) {
         transactions = inputTransactions;
         itemSupports = new HashMap<>();
@@ -47,6 +62,15 @@ public class APriori {
         }
         System.out.println("Apriori Initialized with " + transactions.size() + " transactions");
     }
+
+    /**
+     * This method uses the transactions in the constructor and an inputted minimum frequency to get the frequent itemsets
+     * The method first iterates through the transactions to find the frequent items (frequent itemsets size 1). To get
+     * the frequent itemsets size k=2 or more, a while loop is used to generate candidates, prune the candidates, and
+     * get the candidates to return the itemsets that meet the minimum support
+     * @param minimumSupport the minimum support to run the method
+     * @return
+     */
 
     public Map<Set<Integer>, Integer> run(double minimumSupport) {
         System.out.println("Start frequent 1 set creation");
@@ -67,20 +91,14 @@ public class APriori {
         }
 
         int k = 1;
-        System.out.println("Start loop");
         while (!frequentItemsets.isEmpty()) {
-            System.out.println("Start creating " + k + "-candidates");
-            System.out.println("   - With " + frequentItemsets.size() + " itemsets");
-
             allFrequentItemsets.putAll(frequentItemsets);
 
             //Generate candidates and prune based on downward closure property
             Map<Set<Integer>, Integer> candidates = createCandidates(new ArrayList<>(frequentItemsets.keySet()), k + 1);
             Map<Set<Integer>, Integer> candidateCounts = new HashMap<>();
 
-            System.out.println("Support Counting Candidates");
-            System.out.println("   - " + transactions.size() + " transactions");
-            System.out.println("   - " + candidates.size() + " candidates");
+            //count support
             for (Set<Integer> transaction : transactions) {
                 for (Set<Integer> candidate : candidates.keySet()) {
                     if (transaction.containsAll(candidate)) {
@@ -89,7 +107,7 @@ public class APriori {
                 }
             }
 
-            System.out.println("Last for loop");
+            // add frequent size k itemsets
             frequentItemsets = new HashMap<>();
             for (Map.Entry<Set<Integer>, Integer> entry : candidateCounts.entrySet()) {
                 if (entry.getValue() >= minSupportCount) {
@@ -106,9 +124,16 @@ public class APriori {
         return allFrequentItemsets;
     }
 
+    /**
+     * This method creates the candidates by union two sets and checking if it is the correct. If the size is correct,
+     * the itemset is added to either the candidates or the non-candidate set.
+     * @param itemsets the list of size k itemsets
+     * @param k the needed union size
+     * @return the map of the frequent itemsets.
+     */
+
     private Map<Set<Integer>, Integer> createCandidates(List<Set<Integer>> itemsets, int k) {
-//        System.out.println("Start creating " + k + "-candidates");
-//        System.out.println("   - With " + itemsets.size() + " itemsets");
+
         startTime = System.currentTimeMillis();
         Map<Set<Integer>, Integer> candidates = new HashMap<>();
         Set<Set<Integer>> nonCandidates = new HashSet<>();
@@ -130,10 +155,17 @@ public class APriori {
                 }
             }
         }
-//        endTime = System.currentTimeMillis();
-//        System.out.println(k + "-Candidate creation took " + (endTime-startTime)/1000 + " seconds" );
+
         return candidates;
     }
+
+    /**
+     * This method checks the downward closure property and ensures that every subset of a potential itemset candidate is
+     * frequent
+     * @param candidate the potential candidate stored in a set
+     * @param prevFrequentItemSets the size k-1 frequent itemsets
+     * @return
+     */
 
     public boolean checkDownwardClosure(Set<Integer> candidate, List<Set<Integer>> prevFrequentItemSets) {
         for (Integer item : candidate) {

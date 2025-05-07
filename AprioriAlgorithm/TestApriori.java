@@ -1,6 +1,9 @@
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * This class was used to test the apriori alogrithm before scaling it up in the AprioriTest class.
+ */
 public class TestApriori {
     public static void main(String[] args) {
 
