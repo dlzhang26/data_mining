@@ -1,5 +1,8 @@
 import java.util.*;
 
+/**
+ * The triple class stores the itemset, and the corresponding diffset and support
+ */
 public class Triple {
     private SortedSet<Integer> itemset;
     private BitSet diffset;

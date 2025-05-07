@@ -6,6 +6,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * This is the Diffset Eclat Algorithm. This method creates a frequent itemset tree and uses the differences in size
+ * between the total number of transactions and the differences between an itemset b and predecessor itemset to decidde
+ * whether to add the itemset into the tree. This class return the DiffEclatTree that stores all the frequent itemsets with
+ * its support.
+ */
+
 public class DiffEclat {
 
     private List<SortedSet<Integer>> transactions;
@@ -21,9 +28,20 @@ public class DiffEclat {
         transactionPath = null;
     }
 
+    /**
+     * This method gets the correct path to the data set
+     */
+
     public void setup(Path inputPath) {
         transactionPath = inputPath;
     }
+
+    /**
+     * This method generates the frequent items with its corresponding support and creates the diffsets corresponding
+     * to each item. Then it adds all of the frequent items to the DiffEclat tree with its support and diffset.
+     * @param minimumSupport the minimum threshould
+     * @return the DiffEclat tree
+     */
 
     public DiffEclatTree run2(double minimumSupport) {
         System.out.println("- Run new support threshold");
@@ -111,6 +129,13 @@ public class DiffEclat {
         return diffTree;
     }
 
+    /**
+     * The the start to the run method is identical to the run2 method, and the only differnece is that this creates the
+     * diffsets directly
+     * @param minimumSupport the minimum threshould
+     * @return the DiffEclat tree
+     */
+
     public DiffEclatTree run(double minimumSupport) {
         System.out.println("- New support threshold");
         minSup = minimumSupport;
@@ -169,6 +194,15 @@ public class DiffEclat {
         return diffTree;
     }
 
+    /**
+     * This method takes in teh list of frequent itemsets, the minimum support, and the tree to recurively add itemsets
+     * to the tree, join with other itemsets to increase the size of the itemsets, calculating the support and
+     * adding the itemset if it meets the support.
+     * @param frequentTriples the list of frequent itemsets
+     * @param minSupport the minimum support
+     * @param tree the DiffEclatTree
+     */
+
     private void DiffEclat(List<Triple> frequentTriples, Integer minSupport, DiffEclatTree tree) {
         for (int i = 0; i < frequentTriples.size(); i++) {
 
@@ -183,8 +217,7 @@ public class DiffEclat {
 
                 BitSet diffsetA = frequentTriples.get(i).getDiffset();
                 BitSet diffsetB = frequentTriples.get(j).getDiffset();
-//                System.out.println("ItemA = " + itemA + ", ItemB = " + itemB);
-//                System.out.println("DiffsetA = " + diffsetA + ", DiffsetB = " + diffsetB);
+
                 BitSet finalDiffset = (BitSet) diffsetB.clone();
                 finalDiffset.andNot(diffsetA);
 
@@ -205,18 +238,22 @@ public class DiffEclat {
         fulltests();
     }
 
-    public static void test() {
-        Path filePath = Paths.get("/Users/slatertot21/Python Projects/cosc_254/Final Project/DiffEclat/Datasets/accidents.dat");
+//    public static void test() {
+//        Path filePath = Paths.get("/Users/slatertot21/Python Projects/cosc_254/Final Project/DiffEclat/Datasets/accidents.dat");
+//
+//        DiffEclat eclat = new DiffEclat();
+//        eclat.setup(filePath);
+//        DiffEclatTree result = eclat.run(0.5);
+//        System.out.println();
+//        System.out.println("PRINT TREE");
+//        result.printTree();
+//        System.out.println();
+//        System.out.println("Tree Size: " + result.size());
+//    }
 
-        DiffEclat eclat = new DiffEclat();
-        eclat.setup(filePath);
-        DiffEclatTree result = eclat.run(0.5);
-        System.out.println();
-        System.out.println("PRINT TREE");
-        result.printTree();
-        System.out.println();
-        System.out.println("Tree Size: " + result.size());
-    }
+    /**
+     * this method tests the diffset Eclat algorithm based on different sample sizes
+     */
 
     public static void fulltests() {
         double startTime;
@@ -235,7 +272,7 @@ public class DiffEclat {
         // Setup thresholds for testing
         //SortedSet<Double> thresholds = new TreeSet<>();
 //, 0.05,0.01,0.005,0.001,0.0001
-        Double [] thresholds = { 0.14,0.13, 0.12, 0.11};
+        Double [] thresholds = {0.2, 0.1, 0.05,0.01,0.005,0.001,0.0001};
 
 //        for (double i = 0.5; i <= 0.001; i += 0.01) {
 //            thresholds.add(i);

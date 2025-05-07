@@ -1,5 +1,9 @@
 import java.util.*;
 
+/**
+ * The DiffEclatTree stores all of the frequent itemsets, with each k level representing the corresponding size k frequent
+ * itemset.
+ */
 public class DiffEclatTree {
     private Node root;
     private Integer levelSize;
@@ -9,6 +13,14 @@ public class DiffEclatTree {
         this.root = new Node(new TreeSet<>(), 0);
         this.levelSize = 0;
     }
+
+    /**
+     * This method takes in an itemset that needs to be added to the tree with its corresponding support. It checks if
+     * the node is in the right level by seeing if it shares the same prefix. It identifies the correct part of the tree
+     * to add the itemset.
+     * @param itemset the itemset of interest to add to the tree
+     * @param support the corresponding support of the itemset
+     */
 
     public void insertItemset(SortedSet<Integer> itemset, Integer support) {
         Node currentNode = root;
@@ -41,9 +53,11 @@ public class DiffEclatTree {
         }
     }
 
-    public void printTree() {
-        printNode(root, 0);
-    }
+    /**
+     * Prints the tree
+     * @param node
+     * @param depth
+     */
 
     private void printNode(Node node, int depth) {
         if (node.itemset.size() > 0) {
